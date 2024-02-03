@@ -365,8 +365,8 @@ server:
     ## Secrets must be manually created in the namespace
     ##
     tls: 
-    #   - secretName: tls-secret
-    #     hosts:
+      - secretName: tls-secret
+        hosts:
           - prometheus.appdevops.work.gd
 
   ## Server Deployment Strategy type
