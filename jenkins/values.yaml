@@ -52,7 +52,7 @@ controller:
   # you should revert controller.admin.username to your preferred admin user:
   admin:
     username: "admin"
-    # password: "admin@123"
+    password: admin@123
 
     userKey: jenkins-admin-user
     passwordKey: jenkins-admin-password
@@ -60,7 +60,7 @@ controller:
     # The default configuration uses this secret to configure an admin user
     # If you don't need that user or use a different security realm then you can disable it
     createSecret: true
-    existingSecret: "jenkins"
+    existingSecret: ""
 
   # This values should not be changed unless you use your custom image of jenkins or any devired from. If you want to use
   # Cloudbees Jenkins Distribution docker, you should set jenkinsHome: "/var/cloudbees-jenkins-distribution"
@@ -106,7 +106,7 @@ controller:
   # If you are not using the provided ingress you can specify `controller.jenkinsUrl` to change the url definition.
   # jenkinsUrl: ""
   # If you set this prefix and use ingress controller then you might want to set the ingress path below
-  # jenkinsUriPrefix: "/"
+  # jenkinsUriPrefix: "/jenkins"
   # Enable pod security context (must be `true` if podSecurityContextOverride, runAsUser or fsGroup are set)
   usePodSecurityContext: true
   # Note that `runAsUser`, `fsGroup`, and `securityContextCapabilities` are
@@ -139,7 +139,7 @@ controller:
   targetPort: 8080
   # For minikube, set this to NodePort, elsewhere use LoadBalancer
   # Use ClusterIP if your setup includes ingress controller
-  serviceType: NodePort
+  serviceType: ClusterIP
   # Use Local to preserve the client source IP and avoids a second hop for LoadBalancer and Nodeport type services,
   # but risks potentially imbalanced traffic spreading.
   serviceExternalTrafficPolicy:
@@ -468,19 +468,19 @@ controller:
     apiVersion: "extensions/v1beta1"
     labels: {}
     annotations: 
-      kubernetes.io/ingress.class: nginx
-      kubernetes.io/tls-acme: "true"
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
     # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
     # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
-    ingressClassName: nginx
+    # ingressClassName: nginx
     # Set this path to jenkinsUriPrefix above or use annotations to rewrite path
-    path: "/"
+    # path: "/jenkins"
     # configures the hostname e.g. jenkins.example.com
-    hostName: jenkins.automationlabs.work.gd
+    hostName:
     tls:
-    - secretName: app-tls-secret
+    - secretName: tls-secret
       hosts:
-        - jenkins.automationlabs.work.gd
+        - jenkins.appdevops.work.gd
 
   # often you want to have your controller all locked down and private
   # but you still want to get webhooks from your SCM
@@ -504,9 +504,9 @@ controller:
     # configures the hostname e.g. jenkins-external.example.com
     hostName:
     tls:
-    # - secretName: jenkins-external.example.com
-    #   hosts:
-    #     - jenkins-external.example.com
+    - secretName: tls-secret
+      hosts:
+        - jenkins.appdevops.work.gd
 
   # If you're running on GKE and need to configure a backendconfig
   # to finish ingress setup, use the following values.
